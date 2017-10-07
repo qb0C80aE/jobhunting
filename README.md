@@ -1,6 +1,6 @@
 # What's this?
 
-Recently, I've heard that now recruiters are picking up skilled engineers by checking a activity graph as known as a green lawn on theirGitHub profile page. So that I guess that if we write a job hunting message on the lawn as a canvas, recruiter will think that engineer is so cool, and contact you immediately.
+Recently, I've heard that now recruiters are picking up skilled engineers by checking an activity graph as known as a green lawn on their GitHub profile page. So that I guess that if we write a job hunting message on the lawn as a canvas, recruiters will think that engineer is so cool, and contact you immediately.
 
 Yes, just like this.
 
@@ -19,11 +19,11 @@ First, you need to install `git`. And then, download from the links below.
 
 Please don't forget put these into the PATH enabled directory.  
 
-FYI, I don't know how can I build the binaries for MacOS on linux, for now. If you know, please tell me that.
+FYI, I don't know how I can build the binaries for MacOS on Linux, for now. If you know, please tell me that.
 
 ## Create a new repository on your GitHub account
 
-go to `github.com` and create a repository used to draw the text. Any name is good for that.
+Go to `github.com` and create a repository used to draw the text. Any name is good for that.
 
 ## Clone the repository
 
@@ -35,10 +35,10 @@ Make sure that git config user.name and user.email are valid, and the current br
 
 ## Create some files into the repository directory
 
-* a file used to draw the text, default is grass.txt
+* a file used to draw the text, the default is grass.txt
   * a text contained in this file must be expressed in 50x7 cells, using 0 and 1. 1 indicated the foreground value, and 0 is the background one.
-* a file used to put commit messages. default is message.txt
-  * the file must contains at least one message.
+* a file used to put commit messages. The default is message.txt
+  * the file must contain at least one message.
 
 See `githib.com/qb0C80aE/jobhunting/grass.txt` and `githib.com/qb0C80aE/jobhunting/message.txt` as samples.
 
@@ -49,7 +49,7 @@ $ jobhunting
 ```
 
 If you have already worked on GitHub and contributed to something, the lawn will be normalized.
-In this case, you can use `-s` option to emphasize your text by commiting given times.
+In this case, you can use `-s` option to emphasize your text by committing given times.
 
 ```
 $ jobhunting -s 50
@@ -92,13 +92,13 @@ Then you can get an output like below.
 00000000000000000000000000000000000000000000000000
 ```
 
-Just remove head and tail 2 lines each, and copy the content left into your grass file.
+Just remove head and tail two lines each, and copy the content left into your grass file.
 
-## Do I have to destroy and create the text repository everyday?
+## Do I have to destroy and create the text repository every day?
 
 Perhaps, you could be rescued by using `hub` command to automate the operation.
 
 # In the first place,
 
-This is a totally crappy software, and give useless loads to GitHub. So, if you have enough common sense, it's supposed that you're aware of that you should not to use this.
+This is a crappy software, and give useless loads to GitHub. So, if you have enough common sense, it's supposed that you're aware of that you should not use this.
 
