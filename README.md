@@ -1,3 +1,7 @@
+# Where is README_ja.md?
+
+[Don't worry, sir great Google Translate helps you.](https://translate.googleusercontent.com/translate_c?act=url&depth=1&hl=ja&ie=UTF8&prev=_t&rurl=translate.google.co.jp&sl=en&sp=nmt4&tl=ja&u=https://github.com/qb0C80aE/jobhunting&usg=ALkJrhj_Zh2lSf55CLPo6nYAcc89YVt0EA)
+
 # What's this?
 
 Recently, I've heard that now recruiters are picking up skilled engineers by checking an activity graph as known as a green lawn on their GitHub profile page. So that I guess that if we write a job hunting message on the lawn as a canvas, recruiters will think that engineer is so cool, and contact you immediately.
