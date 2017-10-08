@@ -11,6 +11,15 @@ Yes, just like this.
 ![what?](https://github.com/qb0C80aE/jobhunting/raw/master/example.png)
 ![what?](https://github.com/qb0C80aE/jobhunting/raw/master/vba.png)
 
+# How to build
+
+## Install other package(s)
+
+```
+$ go get gopkg.in/yaml.v2
+$ go build
+```
+
 # How can I use this?
 
 ## Install
