@@ -6,10 +6,12 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/exec"
 	"time"
+	yaml "gopkg.in/yaml.v2"
 )
 
 const (
@@ -18,9 +20,10 @@ const (
 )
 
 var (
-	argStrength    = flag.Int("s", 1, "commit strength")
-	argGrassFile   = flag.String("g", "grass.txt", "the file name of grass")
-	argMessageFile = flag.String("m", "message.txt", "the file name of messages")
+	argStrength     = flag.Int("s", 1, "commit strength")
+	argGrassFile    = flag.String("g", "grass.txt", "the file name of grass")
+	argMessageFile  = flag.String("m", "message.txt", "the file name of messages")
+	argContrastFile = flag.String("c", "contrast.txt", "the file name of contrast pattern")
 )
 
 func calculateStartDate() time.Time {
@@ -31,6 +34,19 @@ func calculateStartDate() time.Time {
 		}
 		date = date.AddDate(0, 0, -1)
 	}
+}
+
+func getContrastData(filename string) (map[interface{}]interface{}, error) {
+	file, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[interface{}]interface{})
+	err = yaml.Unmarshal(file, &m)
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func execGitCommit(commitDate time.Time, messages []string) error {
@@ -130,16 +146,26 @@ func main() {
 		os.Exit(1)
 	}
 
+	contrast, err := getContrastData(*argContrastFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Couldn't get contrast data from %s\n", *argContrastFile)
+		os.Exit(1)
+	}
+
 	commitDate := calculateStartDate()
 	for c := 0; c < col; c++ {
 		for r := 0; r < row; r++ {
-			data := lines[r][c]
-			if data != '0' {
-				for s := 0; s < *argStrength; s++ {
-					err := execGitCommit(commitDate, messages)
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-						os.Exit(1)
+			data := string(lines[r][c])
+			c := contrast[data]
+			if c != nil {
+				if c_f64, ok := c.(float64); ok {
+					count := int(float64(*argStrength) * c_f64)
+					for s := 0; s < count; s++ {
+						err := execGitCommit(commitDate, messages)
+						if err != nil {
+							fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+							os.Exit(1)
+						}
 					}
 				}
 			}
