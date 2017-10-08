@@ -10,6 +10,7 @@ Yes, just like this.
 
 ![what?](https://github.com/qb0C80aE/jobhunting/raw/master/example.png)
 ![what?](https://github.com/qb0C80aE/jobhunting/raw/master/vba.png)
+![what?](https://github.com/qb0C80aE/jobhunting/raw/master/grad.png)
 
 # How to build
 
