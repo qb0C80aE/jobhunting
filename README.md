@@ -27,10 +27,10 @@ $ go build
 
 First, you need to install `git`. And then, download from the links below.
 
-* [linux/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.1/jobhunting-linux-amd64.tgz)
-* [linux/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.1/jobhunting-linux-386.tgz)
-* [windows/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.1/jobhunting-windows-amd64.zip)
-* [windows/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.1/jobhunting-windows-386.zip)
+* [linux/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-linux-amd64.tgz)
+* [linux/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-linux-386.tgz)
+* [windows/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-windows-amd64.zip)
+* [windows/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-windows-386.zip)
 
 Please don't forget put these into the PATH enabled directory.  
 
