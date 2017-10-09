@@ -5,13 +5,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	yaml "gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/exec"
 	"time"
-	yaml "gopkg.in/yaml.v2"
 )
 
 const (
@@ -36,15 +36,79 @@ func calculateStartDate() time.Time {
 	}
 }
 
+func getGrassData() ([][]byte, error) {
+	grassFile, err := os.Open(*argGrassFile)
+	if err != nil {
+		return nil, fmt.Errorf("Coudln't read %s", *argGrassFile)
+	}
+	defer grassFile.Close()
+
+	lines := make([][]byte, row)
+
+	grassFileReader := bufio.NewReaderSize(grassFile, 128)
+	for r := 0; r < row; r++ {
+		line, _, err := grassFileReader.ReadLine()
+
+		if len(line) < col {
+			return nil, fmt.Errorf("Cols in the row[%d] in %s < %d", r, *argGrassFile, col)
+		}
+
+		if err == io.EOF {
+			if r < (row - 1) {
+				return nil, fmt.Errorf("Rows in %s < %d", *argGrassFile, row)
+			}
+			break
+		} else {
+			if err != nil {
+				return nil, err
+			}
+			lines[r] = make([]byte, len(line))
+			copy(lines[r], line)
+		}
+	}
+	return lines, nil
+}
+
+func getMessages() ([]string, error) {
+	messageFile, err := os.Open(*argMessageFile)
+	if err != nil {
+		return nil, fmt.Errorf("Coudln't read %s", *argMessageFile)
+	}
+	defer messageFile.Close()
+
+	messages := make([]string, 0, 32)
+	messageFileReader := bufio.NewReaderSize(messageFile, 128)
+	for {
+		line, _, err := messageFileReader.ReadLine()
+
+		if err == io.EOF {
+			break
+		} else {
+			if err != nil {
+				return nil, err
+			}
+			message := make([]byte, len(line))
+			copy(message, line)
+			messages = append(messages, string(message))
+		}
+	}
+
+	if len(messages) < 1 {
+		return nil, fmt.Errorf("The message file %s must contain at least one message", *argMessageFile)
+	}
+
+	return messages, nil
+}
+
 func getContrastData(filename string) (map[interface{}]interface{}, error) {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Couldn't get contrast data from %s", *argContrastFile)
 	}
 	m := make(map[interface{}]interface{})
 	err = yaml.Unmarshal(file, &m)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("The file %s is not yaml format", *argContrastFile)
 	}
 	return m, nil
 }
@@ -78,80 +142,7 @@ func execGitCommit(commitDate time.Time, messages []string) error {
 	return nil
 }
 
-func main() {
-
-	flag.Parse()
-
-	grassFile, err := os.Open(*argGrassFile)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Coudln't read %s\n", *argGrassFile)
-		os.Exit(1)
-	}
-	defer grassFile.Close()
-
-	lines := make([][]byte, row)
-
-	grassFileReader := bufio.NewReaderSize(grassFile, 128)
-	for r := 0; r < row; r++ {
-		line, _, err := grassFileReader.ReadLine()
-
-		if len(line) < col {
-			fmt.Fprintf(os.Stderr, "Cols in the row[%d] in %s < %d\n", r, *argGrassFile, col)
-			os.Exit(1)
-		}
-
-		if err == io.EOF {
-			if r < (row - 1) {
-				fmt.Fprintf(os.Stderr, "Rows in %s < %d\n", *argGrassFile, row)
-				os.Exit(1)
-			}
-			break
-		} else {
-			if err != nil {
-				fmt.Fprint(os.Stderr, err.Error())
-				os.Exit(1)
-			}
-			lines[r] = make([]byte, len(line))
-			copy(lines[r], line)
-		}
-	}
-
-	messageFile, err := os.Open(*argMessageFile)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Coudln't read %s\n", *argMessageFile)
-		os.Exit(1)
-	}
-	defer messageFile.Close()
-
-	messages := make([]string, 0, 32)
-	messageFileReader := bufio.NewReaderSize(messageFile, 128)
-	for {
-		line, _, err := messageFileReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		} else {
-			if err != nil {
-				fmt.Fprint(os.Stderr, err.Error())
-				os.Exit(1)
-			}
-			message := make([]byte, len(line))
-			copy(message, line)
-			messages = append(messages, string(message))
-		}
-	}
-
-	if err != nil {
-		fmt.Fprint(os.Stderr, err.Error())
-		os.Exit(1)
-	}
-
-	contrast, err := getContrastData(*argContrastFile)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Couldn't get contrast data from %s\n", *argContrastFile)
-		os.Exit(1)
-	}
-
+func kusa(lines [][]byte, messages []string, contrast map[interface{}]interface{}) error {
 	commitDate := calculateStartDate()
 	for c := 0; c < col; c++ {
 		for r := 0; r < row; r++ {
@@ -163,13 +154,42 @@ func main() {
 					for s := 0; s < count; s++ {
 						err := execGitCommit(commitDate, messages)
 						if err != nil {
-							fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-							os.Exit(1)
+							return err
 						}
 					}
 				}
 			}
 			commitDate = commitDate.AddDate(0, 0, 1)
 		}
+	}
+
+	return nil
+}
+
+func main() {
+	flag.Parse()
+
+	lines, err := getGrassData()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
+	}
+
+	messages, err := getMessages()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
+	}
+
+	contrast, err := getContrastData(*argContrastFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
+	}
+
+	err = kusa(lines, messages, contrast)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
 	}
 }
