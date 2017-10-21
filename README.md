@@ -31,10 +31,10 @@ First, you need to install `git`. And then, download from the links below.
 * [linux/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-linux-386.tgz)
 * [windows/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-windows-amd64.zip)
 * [windows/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-windows-386.zip)
+* [mac os/amd64](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-darwin-amd64.tgz)
+* [mac os/386](https://github.com/qb0C80aE/jobhunting/releases/download/0.0.2/jobhunting-darwin-386.tgz)
 
 Please don't forget put these into the PATH enabled directory.  
-
-FYI, I don't know how I can build the binaries for MacOS on Linux, for now. If you know, please tell me that.
 
 ## Create a new repository on your GitHub account
 
